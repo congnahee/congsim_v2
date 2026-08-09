@@ -325,6 +325,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
 .layer-tint-row{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 2px}
 .tint-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
 .tint-dot.active{border-color:var(--gold);box-shadow:0 0 0 1.5px var(--gold)}
+/* 원본 색상 점 — 실제 캘리 대표색 표시 + 원본 표식 */
+.tint-dot.tint-orig{position:relative;background:
+  linear-gradient(135deg,#f4f1ea 0%,#f4f1ea 48%,#d8d2c4 48%,#d8d2c4 52%,#f4f1ea 52%);
+  border-color:var(--border)}
+.tint-dot.tint-orig::after{content:'';position:absolute;left:50%;top:50%;
+  width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
+  border:1.5px solid rgba(0,0,0,.35);box-sizing:border-box}
+.tint-dot.tint-orig.has-color::after{border-color:rgba(255,255,255,.85);
+  box-shadow:0 0 0 1px rgba(0,0,0,.28)}
 .tint-custom-row{display:flex;gap:6px;align-items:center;margin-top:4px}
 
 /* ────────────────────────────────────────
@@ -1103,7 +1112,7 @@ input[type=color]{width:25px;height:25px;border-radius:50%;border:2px solid var(
         <div id="layerTintSection">
           <div style="font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:6px">레이어를 선택하면 색상을 바꿀 수 있어요</div>
           <div class="layer-tint-row" id="layerTintRow">
-            <div class="tint-dot active" style="background:#1c0f06" data-color="null" onclick="setLayerTint(null,this)" title="원본"></div>
+            <div class="tint-dot tint-orig active" id="tintOrigDot" data-color="null" onclick="setLayerTint(null,this)" title="원본 색상으로 되돌리기"></div>
             <div class="tint-dot" style="background:#1c0f06" data-color="#1c0f06" onclick="setLayerTint('#1c0f06',this)" title="먹색"></div>
             <div class="tint-dot" style="background:#FFFFFF;border-color:var(--border)" data-color="#FFFFFF" onclick="setLayerTint('#FFFFFF',this)" title="흰색"></div>
             <div class="tint-dot" style="background:#C4973A" data-color="#C4973A" onclick="setLayerTint('#C4973A',this)" title="금색"></div>
