@@ -628,6 +628,16 @@ input[type=color]{width:25px;height:25px;border-radius:50%;border:2px solid var(
 .csz-btn-ok{flex:2;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,#C4973A,#a07830);color:#1C0F06;font-size:13px;font-weight:700;font-family:'Gowun Dodum',serif;cursor:pointer}
 
 /* ── 레이어 플로팅 툴바 ── */
+/* 배경 맞춤 버튼 */
+.bgfit-row{display:flex;gap:5px;margin-bottom:9px}
+.bgfit-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:8px 3px;border:1.5px solid var(--border);border-radius:9px;background:var(--parchment);
+  cursor:pointer;font-size:10px;color:var(--muted);transition:.15s;line-height:1.2;text-align:center}
+.bgfit-btn:hover{border-color:var(--gold);color:var(--ink)}
+.bgfit-btn:active{transform:scale(.95)}
+.bgfit-btn.active{border-color:var(--gold);background:rgba(196,151,58,.14);color:var(--gold);font-weight:700}
+.bgfit-ic{font-size:15px;line-height:1}
+
 /* 다중선택 정렬 바 */
 #multiAlignBar{display:none;background:rgba(78,205,196,0.08);border:1px solid rgba(78,205,196,0.35);
   border-radius:12px;padding:9px 10px;margin-bottom:10px}
@@ -1258,6 +1268,18 @@ input[type=color]{width:25px;height:25px;border-radius:50%;border:2px solid var(
             <div class="ctrl"><div class="ctrl-row"><span class="ctrl-n">배경 크기</span><span class="ctrl-v" id="vBgScale">100%</span></div><input type="range" id="slBgScale" min="10" max="400" value="100" oninput="setBgScale(this)" onchange="saveHistory()" ontouchend="this.oninput({target:this})"></div>
             <div class="ctrl"><div class="ctrl-row"><span class="ctrl-n">좌우 위치</span><span class="ctrl-v" id="vBgX">0</span></div><input type="range" id="slBgX" min="-200" max="200" value="0" oninput="setBgX(this)" onchange="saveHistory()" ontouchend="this.oninput({target:this})"></div>
             <div class="ctrl"><div class="ctrl-row"><span class="ctrl-n">상하 위치</span><span class="ctrl-v" id="vBgY">0</span></div><input type="range" id="slBgY" min="-200" max="200" value="0" oninput="setBgY(this)" onchange="saveHistory()" ontouchend="this.oninput({target:this})"></div>
+            <div class="slabel" style="margin-top:6px">배경 맞춤</div>
+            <div class="bgfit-row">
+              <div class="bgfit-btn active" id="bgfitCover" onclick="setBgFit('cover',this)" title="캔버스를 꽉 채웁니다. 사진 일부가 잘릴 수 있어요">
+                <span class="bgfit-ic">▣</span><span>채우기</span>
+              </div>
+              <div class="bgfit-btn" id="bgfitContain" onclick="setBgFit('contain',this)" title="사진 전체가 보이게 넣습니다. 여백이 생길 수 있어요">
+                <span class="bgfit-ic">⬚</span><span>전체보기</span>
+              </div>
+              <div class="bgfit-btn" id="bgfitCanvas" onclick="setBgFit('canvas',this)" title="캔버스 비율을 사진에 맞춰 바꿉니다">
+                <span class="bgfit-ic">⤢</span><span>비율맞춤</span>
+              </div>
+            </div>
             <div style="margin-bottom:8px"><div class="togbtn" onclick="resetBgPos()" style="text-align:center;padding:8px;font-size:11px">↺ 위치·크기 초기화</div></div>
             <div class="slabel" style="margin-top:4px">배경 조정</div>
             <div class="ctrl"><div class="ctrl-row"><span class="ctrl-n">밝기</span><span class="ctrl-v" id="vBright">100</span></div><input type="range" id="slBright" min="0" max="200" value="100" oninput="cv('vBright',this);_bright=+this.value;render()" ontouchend="this.oninput({target:this})"></div>
