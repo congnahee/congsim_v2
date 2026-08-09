@@ -271,7 +271,7 @@ function buildFilterThumbs(gridId) {
 function setLayerTint(color, el) {
   const l = layers.find(x => x.id === selId);
   if (!l || l.type !== 'calli') { showToast('캘리 레이어를 선택하세요'); return; }
-  l.tintColor = color === 'null' ? null : color;
+  l.tintColor = (!color || color === 'null' || color === 'undefined') ? null : String(color);
   // dot active 상태
   document.querySelectorAll('.tint-dot').forEach(d => d.classList.remove('active'));
   if (el) el.classList.add('active');
@@ -352,7 +352,9 @@ function getCalliOriginColor(layerId) {
 
   try {
     const src = cache.offscreen;
-    // 축소 샘플링 (성능)
+    if (!src.width || !src.height) return null;
+    // ⚠ 원본 offscreen 을 직접 getImageData 하면 렌더 성능모드가 바뀌어
+    //   이후 합성이 깨질 수 있음 → 반드시 별도 복사본에서만 읽는다
     const SW = 60, SH = Math.max(1, Math.round(60 * src.height / src.width));
     const tmp = document.createElement('canvas');
     tmp.width = SW; tmp.height = SH;
@@ -422,4 +424,19 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _wrapTintSync);
 } else {
   _wrapTintSync();
+}
+
+/* 캘리가 안 보일 때 응급 복구 — Console 에서 fixCalli() 호출 */
+function fixCalli() {
+  let n = 0;
+  layers.forEach(l => {
+    if (l.type !== 'calli') return;
+    if (l.tintColor === 'null' || l.tintColor === 'undefined' || l.tintColor === '') { l.tintColor = null; n++; }
+    if (l.visible === false) { l.visible = true; n++; }
+    if (!l.opacity || l.opacity <= 0) { l.opacity = 100; n++; }
+    if (!l.size || l.size < 10) { l.size = 300; n++; }
+  });
+  render();
+  showToast(n > 0 ? '캘리 ' + n + '건 복구됨 ✓' : '이상 없음');
+  return n;
 }
