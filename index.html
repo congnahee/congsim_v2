@@ -149,14 +149,10 @@ header{
 .canvas-resize-handle.br{bottom:-6px;right:-6px;cursor:nwse-resize;}
 #mainCanvas{display:block;touch-action:none}
 @media(max-width:680px){
-  /* 캔버스존 55vh 안에 컨트롤바(~40px)+사이즈바(~34px)+여백이 함께 들어가야 하므로
-     캔버스 자체는 그만큼 뺀 높이로 제한 — 넘치면 상단이 잘려 보이지 않게 됨 */
-  #mainCanvas{
-    max-width:calc(100vw - 16px) !important;
-    max-height:min(calc(100vw - 16px), calc(55vh - 92px)) !important;
-    max-height:min(calc(100vw - 16px), calc(55dvh - 92px)) !important;
-    width:auto !important;height:auto !important
-  }
+  /* ⚠ 캔버스 크기는 initCanvas() 가 outputW:outputH 비율에 맞춰 직접 계산한다.
+     여기서 max-height 로 세로만 제한하면 가로는 그대로라 비율이 깨진다.
+     따라서 CSS 는 가로 안전망만 두고 높이는 JS 에 맡긴다. */
+  #mainCanvas{max-width:calc(100vw - 16px) !important}
 }
 
 /* 크롭 핸들 */
@@ -606,15 +602,14 @@ input[type=color]{width:25px;height:25px;border-radius:50%;border:2px solid var(
   :root{--panel:100%}
   /* dvh: 주소창 노출/숨김에도 실제 보이는 높이를 따름 */
   .app{flex-direction:column;height:100vh;height:100dvh;height:var(--vvh,100dvh);overflow:hidden}
-  /* 키보드가 올라온 동안에는 캔버스존을 줄여 입력창이 가려지지 않게 */
-  body.kb-open .canvas-zone{max-height:34vh;max-height:34dvh}
-  body.kb-open #mainCanvas{max-height:calc(34vh - 92px) !important;max-height:calc(34dvh - 92px) !important}
+  /* 키보드가 올라온 동안에는 캔버스존만 줄인다 (캔버스 자체 비율은 유지) */
+  body.kb-open .canvas-zone{max-height:34vh;max-height:34dvh;overflow:auto}
   /* 페이지 자체는 절대 스크롤되지 않게 — 캔버스가 밀려나는 원인 차단 */
   html,body{overflow:hidden;overscroll-behavior:none;position:relative}
   /* ⚠ 캔버스존 max(55vh) + 패널 min(45vh) = 100vh — 합이 넘으면 캔버스가 잘림
      overflow:auto + justify-content:flex-start 로 상단 잘림 방지 */
   .canvas-zone{
-    flex:0 0 auto;min-height:180px;max-height:55vh;max-height:55dvh;
+    flex:0 0 auto;min-height:180px;
     overflow:auto;-webkit-overflow-scrolling:touch;
     padding:6px 8px 4px;gap:4px;
     justify-content:flex-start;align-items:center;
@@ -1042,13 +1037,13 @@ input[type=color]{width:25px;height:25px;border-radius:50%;border:2px solid var(
       </div>
     </div>
     <div class="size-bar" id="sizeBar">
-      <div class="size-chip active" data-w="5000" data-h="5000" onclick="setSize(this)">■ 1:1</div>
-      <div class="size-chip" data-w="1080" data-h="1920" onclick="setSize(this)">▯ 9:16</div>
-      <div class="size-chip" data-w="1920" data-h="1080" onclick="setSize(this)">▭ 16:9</div>
-      <div class="size-chip" data-w="1080" data-h="1350" onclick="setSize(this)">▯ 4:5</div>
+      <div class="size-chip active" data-w="5000" data-h="5000" onclick="setSize(this)">1:1</div>
+      <div class="size-chip" data-w="1080" data-h="1920" onclick="setSize(this)">9:16</div>
+      <div class="size-chip" data-w="1920" data-h="1080" onclick="setSize(this)">16:9</div>
+      <div class="size-chip" data-w="1080" data-h="1350" onclick="setSize(this)">4:5</div>
 
-      <div class="size-chip" onclick="enterCropMode()" style="border-color:#C4973A;color:#C4973A;flex-shrink:0">✂ 자르기</div>
-      <div class="size-chip" onclick="openCustomSize()" style="border-color:#7B9E87;color:#7B9E87;flex-shrink:0">✏ 직접입력</div>
+      <div class="size-chip" onclick="enterCropMode()" style="border-color:#C4973A;color:#C4973A;flex-shrink:0">자르기</div>
+      <div class="size-chip" onclick="openCustomSize()" style="border-color:#7B9E87;color:#7B9E87;flex-shrink:0">직접입력</div>
       <div class="zoom-bar">
         <button class="zoom-btn" onclick="zoomCanvas(-1)" title="축소">－</button>
         <span class="zoom-pct" id="zoomPct">100%</span>
